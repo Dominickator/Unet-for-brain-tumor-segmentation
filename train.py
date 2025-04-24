@@ -5,6 +5,7 @@ import glob
 from EUnet import UNetSimplified
 from dataset_loader import TumorCoreDataset
 from torchvision import transforms
+from custom_losses import FocalLoss
 
 # Device setup
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -28,13 +29,13 @@ train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True)
 
 # Model setup
 model = UNetSimplified(in_channels=1, out_channels=1).to(device)
-criterion = nn.BCELoss()
+loss_fn = FocalLoss()  # Focal Loss
 optimizer = optim.Adam(model.parameters(), lr=1e-4)
 
 print("Starting training...\n")
 
 # Training loop
-for epoch in range(10):
+for epoch in range(5):
     model.train()
     total_loss = 0.0
 
@@ -42,7 +43,7 @@ for epoch in range(10):
         images, masks = images.to(device), masks.to(device)
 
         preds = model(images)
-        loss = criterion(preds, masks)
+        loss = loss_fn(preds, masks)
 
         optimizer.zero_grad()
         loss.backward()

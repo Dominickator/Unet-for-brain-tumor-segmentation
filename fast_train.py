@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from EUnet import UNetSimplified
 from dataset_loader import TumorCoreDataset
 import os
+from custom_losses import FocalLoss
 
 def visualize_prediction(image_tensor, mask_tensor, pred_tensor, save_path=None):
     image = image_tensor.squeeze().cpu().numpy()
@@ -56,7 +57,7 @@ print(f"Using {len(train_dataset)} randomly sampled slices for training.")
 train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True)
 
 model = UNetSimplified(in_channels=1, out_channels=1).to(device)
-criterion = nn.BCELoss()
+loss_fn = FocalLoss()  # Focal Loss
 optimizer = optim.Adam(model.parameters(), lr=1e-4)
 
 print("Starting training...\n")
@@ -69,7 +70,7 @@ for epoch in range(3):
         images, masks = images.to(device), masks.to(device)
 
         preds = model(images)
-        loss = criterion(preds, masks)
+        loss = loss_fn(preds, masks)
 
         optimizer.zero_grad()
         loss.backward()

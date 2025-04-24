@@ -65,7 +65,7 @@ test_loader = DataLoader(test_subset, batch_size=1, shuffle=False)
 # Load model
 model = UNetSimplified(in_channels=1, out_channels=1).to(device)
 model.load_state_dict(torch.load(
-    '/home/ss4hz/Unet-for-brain-tumor-segmentation/model_checkpoints/eunet_epoch_6.pth',
+    'eunet_tumor_core.pth',
     map_location=device))
 model.eval()
 
