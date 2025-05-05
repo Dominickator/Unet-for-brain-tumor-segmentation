@@ -11,9 +11,13 @@ from custom_losses import FocalLoss
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}")
 
-# Resize transform
+# Resize and Augmentation transform
 resize_transform = transforms.Compose([
+    transforms.ToPILImage(),  # Convert tensor to PIL Image for augmentation
     transforms.Resize((256, 256)),
+    transforms.RandomHorizontalFlip(),
+    transforms.RandomVerticalFlip(),
+    transforms.RandomRotation(15),  # Rotate by up to 15 degrees
     transforms.ToTensor()
 ])
 
